@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="ARPong" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rHt-B9-ykj">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="e5o-bI-5kV" appends="YES" id="eez-Hx-du0"/>
+                                </connections>
+                            </arscnView>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minValue="0.10000000000000001" maxValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="fKc-Ld-B6z">
+                                <rect key="frame" x="85" y="617" width="204" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="EVU-M0-ezG"/>
+                                </constraints>
+                            </slider>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L26-po-v22">
+                                <rect key="frame" x="20" y="40" width="39" height="30"/>
+                                <state key="normal" title="Reset"/>
+                                <connections>
+                                    <action selector="resetPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RRz-dY-MKc"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Score" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OwY-Eu-7er">
+                                <rect key="frame" x="310" y="44.5" width="45" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="rHt-B9-ykj" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="1zA-P8-huO"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="rHt-B9-ykj" secondAttribute="trailing" id="3wD-hK-SLw"/>
+                            <constraint firstItem="L26-po-v22" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="6jl-o6-YQA"/>
+                            <constraint firstItem="fKc-Ld-B6z" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="9NN-EB-aeb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="rHt-B9-ykj" secondAttribute="bottom" id="Hgi-XT-cF4"/>
+                            <constraint firstItem="L26-po-v22" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="VfO-cg-YLM"/>
+                            <constraint firstItem="rHt-B9-ykj" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="a0q-60-gcS"/>
+                            <constraint firstItem="OwY-Eu-7er" firstAttribute="centerY" secondItem="L26-po-v22" secondAttribute="centerY" id="d7G-uj-HuY"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="fKc-Ld-B6z" secondAttribute="bottom" constant="20" id="fre-3V-Nst"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="OwY-Eu-7er" secondAttribute="trailing" constant="20" id="g0l-6d-Ob3"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="forceSlider" destination="fKc-Ld-B6z" id="Waj-ZX-qXe"/>
+                        <outlet property="sceneView" destination="rHt-B9-ykj" id="VxV-sW-4UF"/>
+                        <outlet property="scoreLabel" destination="OwY-Eu-7er" id="2yl-ZM-c0Y"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="e5o-bI-5kV">
+                    <connections>
+                        <action selector="didTap:" destination="BYZ-38-t0r" id="dS7-dR-IxD"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+        </scene>
+    </scenes>
+</document>
