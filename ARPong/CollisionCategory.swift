@@ -12,4 +12,5 @@ struct CollisionCategory: OptionSet {
     static let ball = CollisionCategory(rawValue: 2)
     static let cup = CollisionCategory(rawValue: 4)
     static let floor = CollisionCategory(rawValue: 8)
+    static let plane = CollisionCategory(rawValue: 16)
 }

@@ -14,9 +14,12 @@ class ViewController: UIViewController {
     @IBOutlet weak var forceSlider: UISlider!
     @IBOutlet weak var scoreLabel: UILabel!
     
-    private var cupsNode:SCNNode? = nil
-    private var ballNode:SCNNode? = nil
-    private var floorNode:SCNNode? = nil
+    private var cupsNode:SCNNode = Cups.create()
+    private var ballNode:SCNNode = Ball.create()
+    private var floorNode:SCNNode = Floor.create()
+    private var nodesAdded:Bool = false
+    private var planeNodes:[SCNNode] = []
+    private var lightNodes:[SCNNode] = []
     private var cameraTransform: matrix_float4x4? {
         let camera = sceneView.session.currentFrame?.camera
         return camera?.transform
@@ -66,25 +69,44 @@ class ViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-
+    
+    
+    ///
+    /// Handles a user's tap on the AR Scene View
+    ///
+    /// Processed tap locations:
+    /// - Ball node: Ball is tossed
+    /// - Plane node: Scene nodes (ball, cups, floor) are placed on top of the plane node
+    ///
     @IBAction func didTap(_ sender: UITapGestureRecognizer) {
         
         // Get tap location
         let tapLocation = sender.location(in: sceneView)
         
         // Perform hit test
-        let results = sceneView.hitTest(tapLocation, options: nil)
+        let results = sceneView.hitTest(tapLocation, options: [SCNHitTestOption.categoryBitMask: CollisionCategory.ball.rawValue | CollisionCategory.plane.rawValue])
         
         if let result = results.first {
+            
             // Ball was tapped so toss
             if result.node == self.ballNode {
                 tossBall()
             }
+            
+            else if self.planeNodes.contains(result.node) {
+                guard let planeAnchor = sceneView.anchor(for: result.node) as? ARPlaneAnchor else {return}
+                
+                addSceneNodes(toPlaneAnchor: planeAnchor)
+            }
         }
     }
     
+    
+    ///
+    /// Tosses the ball node by applying a force to the node's physics body
+    ///
     func tossBall() {
-        if let ballNode = ballNode, let cameraTransform = cameraTransform {
+        if let cameraTransform = cameraTransform {
             
             // Create a force with a magnitude given by the slider in the direction of the camera
             let force = simd_make_float4(0, 0, -(forceSlider.value), 0)
@@ -102,8 +124,49 @@ class ViewController: UIViewController {
         }
     }
     
+    
+    
+    ///
+    /// Adds the basic nodes to the scene (cups, ball, floor) using the parameter plane anchor's position.
+    ///
+    /// - Parameter planeAnchor: The plane anchor the nodes will be added to
+    ///
+    func addSceneNodes(toPlaneAnchor planeAnchor: ARPlaneAnchor) {
+        
+        floorNode.removeFromParentNode()
+        cupsNode.removeFromParentNode()
+        ballNode.removeFromParentNode()
+        
+        // Position the floor node and add to the scene
+        floorNode.simdTransform = planeAnchor.transform
+        sceneView.scene.rootNode.addChildNode(floorNode)
+        
+        // Position the cups and add to the scene
+        cupsNode.position = SCNVector3(floorNode.position.x, floorNode.position.y + 0.085, floorNode.position.z)
+        sceneView.scene.rootNode.addChildNode(cupsNode)
+        
+        // The cups have been added, let's add the ball to the scene
+        if let cameraTransform = cameraTransform {
+            var translation = matrix_identity_float4x4
+            translation.columns.3.x = 0
+            translation.columns.3.y = 0
+            translation.columns.3.z = -0.3
+            ballNode.simdTransform = matrix_multiply(cameraTransform, translation)
+            
+            sceneView.scene.rootNode.addChildNode(ballNode)
+        }
+        
+        self.nodesAdded = true
+        
+    }
+    
+    
+    
+    ///
+    /// Repositions the ball using the frame's current positioning
+    ///
     @IBAction func resetPressed(_ sender: Any) {
-        if let cameraTransform = cameraTransform, let ballNode = ballNode {
+        if let cameraTransform = cameraTransform {
             ballNode.physicsBody = .none
             
             var translation = matrix_identity_float4x4
@@ -115,6 +178,14 @@ class ViewController: UIViewController {
             sceneView.scene.rootNode.addChildNode(ballNode)
         }
     }
+    
+    
+    
+    func addLightNodeTo(_ node:SCNNode) {
+        let lightNode = Light.create()
+        node.addChildNode(lightNode)
+        lightNodes.append(lightNode)
+    }
 }
 
 
@@ -122,47 +193,53 @@ class ViewController: UIViewController {
 
 extension ViewController: ARSCNViewDelegate {
     
-    // A node has need added to the detected plane anchor, let's add stuff to it!
+    ///
+    /// Called when a node is added to a scene's anchor
+    ///
+    /// For our purposes, this function will be called when a plane node is automatically added to detected anchors
+    ///
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
         
+        // Set the properties of the plane node
+        let width = CGFloat(planeAnchor.extent.x)
+        let height = CGFloat(planeAnchor.extent.z)
+        let plane = SCNPlane(width: width, height: height)
+        plane.materials.first?.diffuse.contents = UIColor(red: 90/255, green: 200/255, blue: 250/255, alpha: 0.50)
         
-        if floorNode == nil {
-            floorNode = Floor.create(forAnchor: planeAnchor)
-            floorNode!.simdTransform = planeAnchor.transform
-            
-            sceneView.scene.rootNode.addChildNode(floorNode!)
-        }
+        let planeNode = SCNNode(geometry: plane)
+        planeNode.categoryBitMask = CollisionCategory.plane.rawValue
         
-        if cupsNode == nil {
-            cupsNode = Cups.create()
-            let x = planeAnchor.center.x
-            let y = planeAnchor.center.y + 0.1
-            let z = planeAnchor.center.z
-            cupsNode!.position = SCNVector3(x,y,z)
-            node.addChildNode(cupsNode!)
-        }
+        let x = CGFloat(planeAnchor.center.x)
+        let y = CGFloat(planeAnchor.center.y)
+        let z = CGFloat(planeAnchor.center.z)
+        planeNode.position = SCNVector3(x, y, z)
+        planeNode.eulerAngles.x = -.pi/2
         
-        // The cups has been added, let's add the ball
-        if ballNode == nil {
-            
-            ballNode = Ball.create()
-            
-            if let cameraTransform = cameraTransform {
-                var translation = matrix_identity_float4x4
-                translation.columns.3.x = 0
-                translation.columns.3.y = 0
-                translation.columns.3.z = -0.3
-                ballNode!.simdTransform = matrix_multiply(cameraTransform, translation)
-                
-                sceneView.scene.rootNode.addChildNode(ballNode!)
-            }
-            
-        }
+        self.planeNodes.append(planeNode)
+        node.addChildNode(planeNode)
+        
+        
     }
     
     
+    
+    ///
+    /// Called exactly once per frame in SceneKit before any animation, action evaluation, or physics simulationx
+    ///
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        guard let lightEstimate = self.sceneView.session.currentFrame?.lightEstimate else {return}
+        
+        DispatchQueue.main.async {
+            for lightNode in self.lightNodes {
+                guard let light = lightNode.light else {return}
+                
+                light.intensity = lightEstimate.ambientIntensity
+                light.temperature = lightEstimate.ambientColorTemperature
+            }
+        }
+    }
 }
 
 

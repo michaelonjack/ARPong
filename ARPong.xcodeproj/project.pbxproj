@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B19F194821566F34005033A2 /* Light.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19F194721566F34005033A2 /* Light.swift */; };
 		B1CEB648214F1FF800B0C0C6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1CEB647214F1FF800B0C0C6 /* AppDelegate.swift */; };
 		B1CEB64A214F1FF800B0C0C6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1CEB649214F1FF800B0C0C6 /* ViewController.swift */; };
 		B1CEB64D214F1FF800B0C0C6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1CEB64B214F1FF800B0C0C6 /* Main.storyboard */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B19F194721566F34005033A2 /* Light.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Light.swift; sourceTree = "<group>"; };
 		B1CEB644214F1FF800B0C0C6 /* ARPong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARPong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1CEB647214F1FF800B0C0C6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B1CEB649214F1FF800B0C0C6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				B1CEB650214F1FF900B0C0C6 /* LaunchScreen.storyboard */,
 				B1CEB653214F1FF900B0C0C6 /* Info.plist */,
 				B1CEB675214F211000B0C0C6 /* Ball.swift */,
+				B19F194721566F34005033A2 /* Light.swift */,
 				B1CEB67E214F26AC00B0C0C6 /* Cups.swift */,
 				B1CEB67C214F262800B0C0C6 /* Floor.swift */,
 				B1CEB677214F215000B0C0C6 /* CollisionCategory.swift */,
@@ -277,6 +280,7 @@
 				B1CEB67D214F262800B0C0C6 /* Floor.swift in Sources */,
 				B1CEB64A214F1FF800B0C0C6 /* ViewController.swift in Sources */,
 				B1CEB67F214F26AC00B0C0C6 /* Cups.swift in Sources */,
+				B19F194821566F34005033A2 /* Light.swift in Sources */,
 				B1CEB648214F1FF800B0C0C6 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

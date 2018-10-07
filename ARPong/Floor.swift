@@ -9,7 +9,7 @@
 import ARKit
 
 class Floor:SCNNode {
-    static func create(forAnchor planeAnchor:ARPlaneAnchor) -> SCNNode {
+    static func create() -> SCNNode {
         
         let cupsScene = SCNScene(named: "art.scnassets/cups.scn")!
         let floorNode = cupsScene.rootNode.childNode(withName: "floor", recursively: true)!

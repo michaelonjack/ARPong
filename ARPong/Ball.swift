@@ -12,6 +12,7 @@ class Ball:SCNNode {
     static func create() -> SCNNode {
         let ballGeometry = SCNSphere(radius: 0.04)
         let ballNode = SCNNode(geometry: ballGeometry)
+        ballNode.categoryBitMask = CollisionCategory.ball.rawValue
         
         return ballNode
     }
